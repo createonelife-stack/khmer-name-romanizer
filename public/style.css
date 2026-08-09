@@ -62,7 +62,7 @@ body{
 
 .input-row{ position:relative; }
 #kh-input{
-  width:100%; font-family:inherit; font-size:1.35rem; font-weight:600;
+  width:100%; font-family:'Metal', inherit; font-size:1.5rem; font-weight:normal;
   padding:14px 44px 14px 16px; border:2px solid var(--line); border-radius:14px;
   background:var(--bg); color:var(--ink); outline:none; transition:border-color .2s;
 }
