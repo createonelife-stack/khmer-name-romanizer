@@ -18,7 +18,9 @@ const KH_ROMAN_FIX = {
   'សិរ៉ី': 'SEREY',
   'ពុទ្ធិ': 'PUTHI',
   'ពុធិ': 'PUTHI',
-  'ពិសិដ្ឋ': 'PISETH'
+  'ពិសិដ្ឋ': 'PISETH',
+  'វង្ស': 'VONG',
+  'វង្សា': 'VONGSA'
 };
 
 function _romanizeKhmer(text, opt) {
