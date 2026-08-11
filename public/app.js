@@ -29,7 +29,7 @@ function _romanizeKhmer(text, opt) {
     'យ':['y',2],'រ':['r',2],'ល':['l',2],'វ':['v',2],
     'ស':['s',1],'ហ':['h',1],'ឡ':['l',1],'អ':['',1]
   };
-  const V2c = { 'ុំ':['om','um'],'ាំ':['am','oam'],'ុះ':['os','ous'],'េះ':['es','es'],'ោះ':['as','uos'] };
+  const V2c = { 'ុំ':['om','um'],'ាំ':['am','oam'],'ុះ':['os','ous'],'េះ':['es','es'],'ោះ':['as','uos'],'័យ':['ai','ey'] };
   const V1c = {
     'ា':['a',EA],'ិ':['e','e'],'ី':['ey','y'],'ឹ':['oe','oe'],'ឺ':['eu','eu'],
     'ុ':['o','u'],'ូ':['o','uo'],'ួ':['uo','uo'],'ើ':['oeu','oeu'],'ឿ':['oeur','oeur'],
@@ -55,7 +55,7 @@ function _romanizeKhmer(text, opt) {
       if (chars[i] === '៌') i++;
       if (chars[i] === '៉') { series = 1; i++; }       // musikatoan → អឃោសៈ
       else if (chars[i] === '៊') { series = 2; i++; }  // triisap → ឃោសៈ
-      if (chars[i] === '័') i++;
+      if (chars[i] === '័' && chars[i + 1] !== 'យ') i++;
       let vowel = null;
       const two = (chars[i] || '') + (chars[i + 1] || '');
       if (V2c[two]) { vowel = pick(V2c[two], series); i += 2; }
