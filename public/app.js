@@ -98,7 +98,8 @@ function _romanizeKhmer(text, opt) {
 
 function _applyFix(text, opt) {
   if (!text || !text.trim()) return '';
-  const whole = text.trim().replace(/\s+/g, ' ');
+  let whole = text.trim().replace(/\s+/g, ' ');
+  whole = whole.replace(/លម្អង/g, 'លំអង');
   if (KH_ROMAN_FIX[whole]) return KH_ROMAN_FIX[whole].toUpperCase();
   return whole.split(' ').map(w => KH_ROMAN_FIX[w] || _romanizeKhmer(w, opt)).join(' ').toUpperCase();
 }
