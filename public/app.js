@@ -23,7 +23,9 @@ const KH_ROMAN_FIX = {
   'វង្សា': 'VONGSA',
   'សុវណ្ណ': 'SOVAN',
   'ពេជ្យ': 'PICH',
-  'ពិច': 'PICH'
+  'ពិច': 'PICH',
+  'ពេជ្រសិរី': 'PECHSEREY',
+  'ពិចសិរី': 'PECHSEREY'
 };
 
 function _romanizeKhmer(text, opt) {
