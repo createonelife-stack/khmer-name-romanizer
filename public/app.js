@@ -10,7 +10,9 @@ const KH_ROMAN_FIX = {
   'រស្មី': 'RAKSMEY',
   'មករា': 'MAKARA',
   'គាវណ្ណ': 'KEAVAN',
-  'សំណាង': 'SAMANG'
+  'សំណាង': 'SAMANG',
+  'សាវតា': 'SAVDA',
+  'សាវដា': 'SAVDA'
 };
 
 function _romanizeKhmer(text, opt) {
@@ -31,7 +33,7 @@ function _romanizeKhmer(text, opt) {
   };
   const V2c = { 'ុំ':['om','um'],'ាំ':['am','oam'],'ុះ':['os','ous'],'េះ':['es','es'],'ោះ':['as','uos'],'័យ':['ai','ai'] };
   const V1c = {
-    'ា':['a',EA],'ិ':['e','e'],'ី':['ey','y'],'ឹ':['oe','oe'],'ឺ':['eu','eu'],
+    'ា':['a',EA],'ិ':['e','i'],'ី':['ey','y'],'ឹ':['oe','oe'],'ឺ':['eu','eu'],
     'ុ':['o','u'],'ូ':['o','uo'],'ួ':['uo','uo'],'ើ':['oeu','oeu'],'ឿ':['oeur','oeur'],
     'ៀ':['ie','ie'],'េ':['e','e'],'ែ':['e','e'],'ៃ':['ai','ey'],'ោ':['or','o'],'ៅ':['ao','eou'],
     'ំ':['am','aum'],'ះ':['as','eah'],'ៈ':['ak','ak']
