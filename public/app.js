@@ -60,7 +60,15 @@ function _romanizeKhmer(text, opt) {
       let base = C[ch][0], series = C[ch][1];
       i++;
       let sub = '';
-      while (chars[i] === COENG && isCons(chars[i + 1])) { sub += C[chars[i + 1]][0]; i += 2; }
+      while (chars[i] === COENG && isCons(chars[i + 1])) {
+        let isFinalSub = true;
+        for (let j = i + 2; j < chars.length; j++) {
+          if (/\s/.test(chars[j])) break;
+          if (chars[j] !== '៍' && chars[j] !== 'ៗ') { isFinalSub = false; break; }
+        }
+        if (!isFinalSub) sub += C[chars[i + 1]][0];
+        i += 2;
+      }
       if (chars[i] === '៍') { i++; continue; }        // toandakhiat = silent
       if (chars[i] === '៌') i++;
       if (chars[i] === '៉') { series = 1; i++; }       // musikatoan → អឃោសៈ
