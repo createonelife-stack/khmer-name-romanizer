@@ -12,7 +12,8 @@ const KH_ROMAN_FIX = {
   'គាវណ្ណ': 'KEAVAN',
   'សំណាង': 'SAMANG',
   'សាវតា': 'SAVDA',
-  'សាវដា': 'SAVDA'
+  'សាវដា': 'SAVDA',
+  'សុវណ្ណភូមិ': 'SOVANPHUOM'
 };
 
 function _romanizeKhmer(text, opt) {
