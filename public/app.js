@@ -89,7 +89,7 @@ function _romanizeKhmer(text, opt) {
       }
       if (chars[i] === '៍') { i++; continue; }        // toandakhiat = silent
       if (chars[i] === '៌') i++;
-      if (chars[i] === '៉') { series = 1; i++; }       // musikatoan → អឃោសៈ
+      if (chars[i] === '៉') { series = 1; if (ch === 'ប') base = 'p'; i++; }       // musikatoan → អឃោសៈ
       else if (chars[i] === '៊') { series = 2; i++; }  // triisap → ឃោសៈ
       if (chars[i] === '័' && chars[i + 1] !== 'យ') i++;
       let vowel = null;
@@ -97,10 +97,25 @@ function _romanizeKhmer(text, opt) {
       if (V2c[two]) { vowel = pick(V2c[two], series); i += 2; }
       else if (V1c[chars[i]]) { vowel = pick(V1c[chars[i]], series); i++; }
       let coda = false;
-      if (chars[i] === '់') { i++; coda = true; }       // bantoc ⇒ coda
+      let isBantoc = false;
+      if (chars[i] === '់') { i++; coda = true; isBantoc = true; }       // bantoc ⇒ coda
       if (chars[i] === 'ៗ') i++;
+      let isCodaConsonant = false;
+      if (vowel == null) {
+        if (isBantoc || (CODA && lastV) || !moreConsInWord(i)) {
+          isCodaConsonant = true;
+        }
+      }
+      if (isCodaConsonant && (ch === 'ខ' || ch === 'ឃ')) {
+        base = 'k';
+      }
       let seg = base + sub;
       if (vowel != null) { seg += vowel; lastV = true; }
+      else if (isBantoc) {
+        if (ch === 'ត' || ch === 'ទ') seg += 'h';
+        else seg += base;
+        lastV = false;
+      }
       else if (coda) { lastV = false; }
       else if (CODA && lastV) { lastV = false; }                                        // coda (no inherent)
       else if (moreConsInWord(i)) { seg += (series === 1 ? IN1 : ORV); lastV = true; }  // onset inherent
