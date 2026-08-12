@@ -7,6 +7,9 @@
 const KH_ROMAN_FIX = {
   'ឧត្តម': 'OTDAM',
   'វណ្ណ': 'VAN',
+  'វ៉ាន់': 'VAN',
+  'វណ្ណរិទ្ធ': 'VANRIT',
+  'វ៉ាន់រិទ្ធ': 'VANRIT',
   'រស្មី': 'RAKSMEY',
   'មករា': 'MAKARA',
   'គាវណ្ណ': 'KEAVAN',
