@@ -14,6 +14,8 @@ const KH_ROMAN_FIX = {
   'សុខ': 'SOKH',
   'សាវតា': 'SAVDA',
   'សាវដា': 'SAVDA',
+  'ជ័យ': 'CHEY',
+  'ជៃ': 'CHEY',
   'សុវណ្ណភូមិ': 'SOVANPHUOM',
   'សិរី': 'SEREY',
   'សិរ៉ី': 'SEREY',
