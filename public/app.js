@@ -15,6 +15,8 @@ const KH_ROMAN_FIX = {
   'សុវណ្ណារិទ្ធ': 'SOVANARIT',
   'សុវ៉ាន់ណារិទ្ធ': 'SOVANARIT',
   'សុវ៉ាន់ណារិទ': 'SOVANARIT',
+  'សុវណ្ណា': 'SOVANA',
+  'សុវ៉ាន់ណា': 'SOVANA',
   'រស្មី': 'RAKSMEY',
   'មករា': 'MAKARA',
   'គាវណ្ណ': 'KEAVAN',
