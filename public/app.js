@@ -10,6 +10,8 @@ const KH_ROMAN_FIX = {
   'វ៉ាន់': 'VAN',
   'វណ្ណរិទ្ធ': 'VANRIT',
   'វ៉ាន់រិទ្ធ': 'VANRIT',
+  'វណ្ណា': 'VANA',
+  'វ៉ាន់ណា': 'VANA',
   'រស្មី': 'RAKSMEY',
   'មករា': 'MAKARA',
   'គាវណ្ណ': 'KEAVAN',
