@@ -1,84 +1,72 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="km">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b7a75">
-  <title>ឈ្មោះខ្មែរ → ឡាតាំង | Khmer Name Romanizer</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%87%B0%F0%9F%87%AD%3C/text%3E%3C/svg%3E">
-  <link href="https://fonts.googleapis.com/css2?family=Metal&family=Noto+Sans+Khmer:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Khmer Name Romanizer</title>
+  <!-- Preconnect and Load Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Metal&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- App bar -->
+
   <header class="appbar">
-    <button id="menu-btn" class="icon-btn" aria-label="ម៉ឺនុយ">
-      <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
     <div class="appbar-title">
       <span class="flag">🇰🇭</span>
       <span>ឈ្មោះខ្មែរ → ឡាតាំង</span>
     </div>
     <span class="appbar-spacer"></span>
+    <button id="themeBtn" class="icon-btn" aria-label="ប្តូរពណ៌ងងឹត/ភ្លឺ">
+      <svg id="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <svg id="sun-icon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    </button>
   </header>
 
-  <!-- Drawer (mobile menu) -->
-  <div id="scrim" class="scrim"></div>
-  <nav id="drawer" class="drawer">
-    <div class="drawer-head">
-      <span>ម៉ឺនុយ</span>
-      <button id="drawer-close" class="icon-btn" aria-label="បិទ"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    </div>
-    <p class="drawer-sec">ឧទាហរណ៍ (ចុច​ដើម្បី​សាកល្បង)</p>
-    <button class="drawer-item" data-ex="សុខ សាន្ត">សុខ សាន្ត</button>
-    <button class="drawer-item" data-ex="ងើនសឿនភួង សំណាង">ងើនសឿនភួង សំណាង</button>
-    <button class="drawer-item" data-ex="គាវណ្ណ មករា">គាវណ្ណ មករា</button>
-    <button class="drawer-item" data-ex="នី វ៉ាន់រតនៈ">នី វ៉ាន់រតនៈ</button>
-    <button class="drawer-item" data-ex="ឃុន ពិសី">ឃុន ពិសី</button>
-    <p class="drawer-sec">អំពី</p>
-    <div class="drawer-about">
-      បម្លែង​ឈ្មោះ​ខ្មែរ​ជា​អក្សរ​ឡាតាំង (អង់គ្លេស) តាម​ក្បួន ២ ស៊េរី​សម្លេង។
-      លទ្ធផល​ជា​ការ​ប៉ាន់​ស្មាន — ជ្រើស​ជម្រើស​ជិត​បំផុត។
-    </div>
-    <p class="drawer-sec">កម្មវិធីផ្សេងៗ</p>
-    <a href="http://samuth.up.railway.app" target="_blank" class="drawer-item" style="text-decoration: none; color: inherit;">🎓 កម្មវិធីគ្រប់គ្រងពិន្ទុ</a>
-    <a href="http://khmertyping.up.railway.app" target="_blank" class="drawer-item" style="text-decoration: none; color: inherit;">⌨️ រៀនវាយពាក្យខ្មែរ</a>
-    <a href="https://helpyousale.up.railway.app/" target="_blank" class="drawer-item" style="text-decoration: none; color: inherit;">🛒 គ្រប់គ្រងការលក់</a>
-  </nav>
-
-  <!-- Main -->
   <main class="wrap">
-    <section class="card">
-      <label class="field-label" for="kh-input">សរសេរ​ឈ្មោះ​ជា​ភាសា​ខ្មែរ</label>
+    
+    <div id="hint" style="text-align: center; font-size: 0.85rem; color: var(--muted); margin-bottom: 15px;">
+      Advanced Rule-based Romanization Mode (Reconstructed)
+    </div>
+
+    <section class="card glass-card">
+      <label class="field-label" for="kh-input">សរសេរ​ឈ្មោះ​ជា​ភាសា​ខ្មែរ (ឧ. សុខ សំណាង)</label>
       <div class="input-row">
         <input id="kh-input" type="text" inputmode="text" autocomplete="off" spellcheck="false"
-               placeholder="ឧ. សុខ សំណាង" aria-label="ឈ្មោះខ្មែរ">
-        <button id="clear-btn" class="clear-btn" aria-label="សម្អាត">✕</button>
+               placeholder="វាយឈ្មោះនៅទីនេះ...">
+        <button id="clearBtn" class="clear-btn" aria-label="សម្អាត">✕</button>
       </div>
 
       <div class="result">
         <div class="result-label">អក្សរ​ឡាតាំង (ENGLISH)</div>
         <div id="latin-output" class="latin empty">—</div>
-        <button id="copy-btn" class="copy-btn">📋 ចម្លង</button>
+        <button id="copyBtn" class="copy-btn">📋 ចម្លង (Copy)</button>
       </div>
 
-      <div class="variants-wrap">
-        <div class="variants-label" id="variants-title">ជម្រើស​ផ្សេង (ចុច​ដើម្បី​ជ្រើស)</div>
+      <div class="variants-wrap" id="variants-wrap" style="display:none;">
+        <div class="variants-label">ជម្រើស​ផ្សេង (ចុច​ដើម្បី​ជ្រើស)</div>
         <div id="variants" class="variants"></div>
       </div>
     </section>
 
-    <p class="hint">💡 អក្សរ​ខ្មែរ​ជា​ឡាតាំង​គ្មាន​ក្បួន​តែ​មួយ​ទេ — បើ​មិន​ត្រូវ​ចិត្ត សូម​ជ្រើស​ជម្រើស​ផ្សេង ឬ​កែ​ដោយ​ដៃ។</p>
+    <!-- Examples -->
+    <div style="margin-top:20px;">
+      <div class="variants-label">ឧទាហរណ៍</div>
+      <div id="examples" class="variants"></div>
+    </div>
+
+    <!-- On-screen keyboard -->
+    <div style="margin-top:20px;">
+      <div class="variants-label">ក្ដារចុចអក្សរខ្មែរ</div>
+      <div id="kbd" class="kbd"></div>
+    </div>
+
   </main>
 
-  <footer class="foot">
-    <div class="foot-inner">
-      <span>&copy; 2026 រក្សាសិទ្ធិគ្រប់យ៉ាង</span>
-      <span class="foot-dot">·</span>
-      <span>បង្កើតដោយ <strong>សាស្ត្រាចារ្យ ពៅ សាមុត</strong></span>
-    </div>
-  </footer>
+  <div id="toast" class="toast">បានចម្លងដោយជោគជ័យ!</div>
 
+  <script src="khmer-romanize.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

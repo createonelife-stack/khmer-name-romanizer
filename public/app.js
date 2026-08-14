@@ -1,191 +1,43 @@
-/* =========================================================
-   Khmer → Latin romanization engine
-   (two series: អឃោសៈ=1 / ឃោសៈ=2 ; coda-aware ; variants ; exceptions)
-   ========================================================= */
-
-// ករណី​លើកលែង​តាម​ពាក្យ / ឃ្លា (ពាក្យ​ដែល​អាន​មិន​តាម​ក្បួន)
-const KH_ROMAN_FIX = {
-  'ឧត្តម': 'OTDAM',
-  'វណ្ណ': 'VAN',
-  'វ៉ាន់': 'VAN',
-  'វណ្ណរិទ្ធ': 'VANRIT',
-  'វ៉ាន់រិទ្ធ': 'VANRIT',
-  'វណ្ណា': 'VANA',
-  'វ៉ាន់ណា': 'VANA',
-  'សុវណ្ណារិទ្ធ': 'SOVANARIT',
-  'សុវ៉ាន់ណារិទ្ធ': 'SOVANARIT',
-  'សុវ៉ាន់ណារិទ': 'SOVANARIT',
-  'សុវណ្ណា': 'SOVANA',
-  'សុវ៉ាន់ណា': 'SOVANA',
-  'រស្មី': 'RAKSMEY',
-  'មករា': 'MAKARA',
-  'គាវណ្ណ': 'KEAVAN',
-  'សំណាង': 'SAMNANG',
-  'សុខ': 'SOKH',
-  'សាវតា': 'SAVDA',
-  'សាវដា': 'SAVDA',
-  'ជ័យ': 'CHEY',
-  'ជៃ': 'CHEY',
-  'សុវណ្ណភូមិ': 'SOVANPHUOM',
-  'សិរី': 'SEREY',
-  'សិរ៉ី': 'SEREY',
-  'ពុទ្ធិ': 'PUTHI',
-  'ពុធិ': 'PUTHI',
-  'ពិសិដ្ឋ': 'PISETH',
-  'វង្ស': 'VONG',
-  'វង្សា': 'VONGSA',
-  'សុវណ្ណ': 'SOVAN',
-  'ពេជ្យ': 'PICH',
-  'ពិច': 'PICH',
-  'ពេជ្រសិរី': 'PECHSEREY',
-  'ពិចសិរី': 'PECHSEREY'
-};
-
-function _romanizeKhmer(text, opt) {
-  if (!text) return '';
-  opt = opt || {};
-  const EA = opt.ea || 'ea';            // ស្រៈ ា ស៊េរី​ឃោសៈ (ea ឬ a)
-  const ORV = opt.or || 'or';           // ស្រៈ​ដើម​ស៊េរី​ឃោសៈ (or ឬ o)
-  const IN1 = opt.drop1st ? '' : 'a';   // ស្រៈ​ដើម​ស៊េរី​អឃោសៈ
-  // ព្យញ្ជនៈ [base, series]  series 1 = អឃោសៈ, 2 = ឃោសៈ
-  const C = {
-    'ក':['k',1],'ខ':['kh',1],'គ':['k',2],'ឃ':['kh',2],'ង':['ng',2],
-    'ច':['ch',1],'ឆ':['chh',1],'ជ':['ch',2],'ឈ':['chh',2],'ញ':['nh',2],
-    'ដ':['d',1],'ឋ':['th',1],'ឌ':['d',2],'ឍ':['th',2],'ណ':['n',1],
-    'ត':['t',1],'ថ':['th',1],'ទ':['t',2],'ធ':['th',2],'ន':['n',2],
-    'ប':['b',1],'ផ':['ph',1],'ព':['p',2],'ភ':['ph',2],'ម':['m',2],
-    'យ':['y',2],'រ':['r',2],'ល':['l',2],'វ':['v',2],
-    'ស':['s',1],'ហ':['h',1],'ឡ':['l',1],'អ':['',1]
-  };
-  const V2c = { 'ុំ':['om','um'],'ាំ':['am','oam'],'ុះ':['os','ous'],'េះ':['es','es'],'ោះ':['as','uos'],'័យ':['ai','ai'] };
-  const V1c = {
-    'ា':['a',EA],'ិ':['e','i'],'ី':['ey','y'],'ឹ':['oe','oe'],'ឺ':['eu','eu'],
-    'ុ':['o','u'],'ូ':['o','uo'],'ួ':['uo','uo'],'ើ':['oeu','oeu'],'ឿ':['oeur','oeur'],
-    'ៀ':['ie','ie'],'េ':['e','e'],'ែ':['e','e'],'ៃ':['ai','ey'],'ោ':['or','o'],'ៅ':['ao','eou'],
-    'ំ':['am','aum'],'ះ':['as','eah'],'ៈ':['ak','ak']
-  };
-  const IND = { 'ឥ':'e','ឦ':'ey','ឧ':'u','ឩ':'u','ឪ':'ov','ឫ':'roek','ឬ':'reu','ឭ':'loek','ឮ':'leu','ឯ':'e','ឰ':'ai','ឱ':'or','ឲ':'or','ឳ':'ao' };
-  const COENG = '្';
-  const chars = Array.from(text);
-  const isCons = ch => Object.prototype.hasOwnProperty.call(C, ch);
-  const moreConsInWord = (idx) => { for (let j = idx; j < chars.length; j++) { if (/\s/.test(chars[j])) return false; if (isCons(chars[j])) return true; } return false; };
-  const pick = (pair, series) => series === 1 ? pair[0] : pair[1];
-  const CODA = opt.inherent !== 'always'; // true = ព្យញ្ជនៈ​តាម​ក្រោយ​ស្រៈ ⇒ coda
-  let out = '', i = 0, lastV = false;
-  while (i < chars.length) {
-    const ch = chars[i];
-    if (isCons(ch)) {
-      let base = C[ch][0], series = C[ch][1];
-      i++;
-      let sub = '';
-      while (chars[i] === COENG && isCons(chars[i + 1])) {
-        let isFinalSub = true;
-        for (let j = i + 2; j < chars.length; j++) {
-          if (/\s/.test(chars[j])) break;
-          if (chars[j] !== '៍' && chars[j] !== 'ៗ') { isFinalSub = false; break; }
-        }
-        if (!isFinalSub) sub += C[chars[i + 1]][0];
-        i += 2;
-      }
-      if (chars[i] === '៍') { i++; continue; }        // toandakhiat = silent
-      if (chars[i] === '៌') i++;
-      if (chars[i] === '៉') { series = 1; if (ch === 'ប') base = 'p'; i++; }       // musikatoan → អឃោសៈ
-      else if (chars[i] === '៊') { series = 2; i++; }  // triisap → ឃោសៈ
-      if (chars[i] === '័' && chars[i + 1] !== 'យ') i++;
-      let vowel = null;
-      const two = (chars[i] || '') + (chars[i + 1] || '');
-      if (V2c[two]) { vowel = pick(V2c[two], series); i += 2; }
-      else if (V1c[chars[i]]) { vowel = pick(V1c[chars[i]], series); i++; }
-      let coda = false;
-      let isBantoc = false;
-      if (chars[i] === '់') { i++; coda = true; isBantoc = true; }       // bantoc ⇒ coda
-      if (chars[i] === 'ៗ') i++;
-      let isCodaConsonant = false;
-      if (vowel == null) {
-        if (isBantoc || (CODA && lastV) || !moreConsInWord(i)) {
-          isCodaConsonant = true;
-        }
-      }
-      if (isCodaConsonant && (ch === 'ខ' || ch === 'ឃ')) {
-        base = 'k';
-      }
-      let seg = base + sub;
-      if (vowel != null) { seg += vowel; lastV = true; }
-      else if (isBantoc) {
-        if (ch === 'ត' || ch === 'ទ') seg += 'h';
-        else seg += base;
-        lastV = false;
-      }
-      else if (coda) { lastV = false; }
-      else if (CODA && lastV) { lastV = false; }                                        // coda (no inherent)
-      else if (moreConsInWord(i)) { seg += (series === 1 ? IN1 : ORV); lastV = true; }  // onset inherent
-      else { lastV = false; }
-      out += seg;
-    } else if (IND[ch] != null) { out += IND[ch]; i++; lastV = true; }
-    else if (/\s/.test(ch)) { out += ' '; i++; lastV = false; }
-    else { i++; }
-  }
-  return out.replace(/\s+/g, ' ').trim().toUpperCase();
-}
-
-function _applyFix(text, opt) {
-  if (!text || !text.trim()) return '';
-  let whole = text.trim().replace(/\s+/g, ' ');
-  whole = whole.replace(/លម្អង/g, 'លំអង');
-  whole = whole.replace(/ពេជ្រ/g, 'ពិច');
-  if (KH_ROMAN_FIX[whole]) return KH_ROMAN_FIX[whole].toUpperCase();
-  return whole.split(' ').map(w => KH_ROMAN_FIX[w] || _romanizeKhmer(w, opt)).join(' ').toUpperCase();
-}
-
-function romanizeKhmer(text) { return _applyFix(text, { ea: 'a', or: 'or', drop1st: false }); }
-
-function romanizeKhmerVariants(text) {
-  if (!text || !text.trim()) return [];
-  const opts = [
-    { ea: 'a', or: 'or', drop1st: false, inherent: 'coda' },
-    { ea: 'a', or: 'or', drop1st: false, inherent: 'always' },
-    { ea: 'a', or: 'o', drop1st: false, inherent: 'always' },
-    { ea: 'a', or: 'o', drop1st: false, inherent: 'coda' },
-    { ea: 'ea', or: 'or', drop1st: false, inherent: 'coda' }
-  ];
-  const seen = new Set(), res = [];
-  opts.forEach(o => { const v = _applyFix(text, o); if (v && !seen.has(v)) { seen.add(v); res.push(v); } });
-  return res;
-}
-
-/* =========================================================
-   UI
-   ========================================================= */
 const $ = id => document.getElementById(id);
 const input = $('kh-input');
 const output = $('latin-output');
 const variantsBox = $('variants');
-const copyBtn = $('copy-btn');
+const variantsWrap = $('variants-wrap');
+const copyBtn = $('copyBtn');
 
 function render() {
-  const text = input.value;
-  const main = romanizeKhmer(text);
-  output.textContent = main || '—';
-  output.classList.toggle('empty', !main);
-  // variants
-  const vs = romanizeKhmerVariants(text);
-  variantsBox.innerHTML = '';
-  const vTitle = document.getElementById('variants-title');
-  if (vTitle) vTitle.style.display = (vs.length > 1) ? '' : 'none';
-  if (vs.length > 1) {
-    vs.forEach(v => {
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'chip' + (v === main ? ' active' : '');
-      chip.textContent = v;
-      chip.onclick = () => {
-        output.textContent = v;
-        output.classList.remove('empty');
-        [...variantsBox.children].forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-      };
-      variantsBox.appendChild(chip);
-    });
+  const text = input.value.trim();
+  if (!text) {
+    output.textContent = '—';
+    output.classList.add('empty');
+    variantsBox.innerHTML = '';
+    variantsWrap.style.display = 'none';
+    return;
+  }
+  
+  if (window.KhmerRomanize) {
+    const cands = KhmerRomanize.romanizeCandidates(text, 6);
+    if (cands.length > 0) {
+      output.textContent = cands[0];
+      output.classList.remove('empty');
+      variantsBox.innerHTML = '';
+      if (cands.length > 1) {
+        variantsWrap.style.display = 'block';
+        cands.forEach(v => {
+          const chip = document.createElement('button');
+          chip.className = 'chip' + (v === cands[0] ? ' active' : '');
+          chip.textContent = v;
+          chip.onclick = () => {
+            output.textContent = v;
+            [...variantsBox.children].forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+          };
+          variantsBox.appendChild(chip);
+        });
+      } else {
+        variantsWrap.style.display = 'none';
+      }
+    }
   }
 }
 
@@ -196,30 +48,93 @@ copyBtn.addEventListener('click', async () => {
   if (!val || val === '—') return;
   try {
     await navigator.clipboard.writeText(val);
-    copyBtn.classList.add('copied');
-    copyBtn.textContent = '✓ បាន​ចម្លង';
-    setTimeout(() => { copyBtn.classList.remove('copied'); copyBtn.textContent = '📋 ចម្លង'; }, 1400);
+    showToast();
   } catch (e) {
-    // fallback
     const r = document.createRange(); r.selectNode(output);
     window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
     document.execCommand('copy'); window.getSelection().removeAllRanges();
+    showToast();
   }
 });
 
-$('clear-btn').addEventListener('click', () => { input.value = ''; render(); input.focus(); });
+function showToast() {
+  const toast = $('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
 
-// drawer (mobile menu)
-const drawer = $('drawer'), scrim = $('scrim');
-function openDrawer() { drawer.classList.add('open'); scrim.classList.add('show'); }
-function closeDrawer() { drawer.classList.remove('open'); scrim.classList.remove('show'); }
-$('menu-btn').addEventListener('click', openDrawer);
-scrim.addEventListener('click', closeDrawer);
-$('drawer-close').addEventListener('click', closeDrawer);
+$('clearBtn').addEventListener('click', () => { input.value = ''; render(); input.focus(); });
 
-// examples in drawer → fill
-document.querySelectorAll('[data-ex]').forEach(el => {
-  el.addEventListener('click', () => { input.value = el.getAttribute('data-ex'); render(); closeDrawer(); input.focus(); });
+// Theme Logic
+const themeBtn = $('themeBtn');
+const moonIcon = $('moon-icon');
+const sunIcon = $('sun-icon');
+let currentTheme = localStorage.getItem('theme') || 'light';
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  if (theme === 'dark') { moonIcon.style.display = 'none'; sunIcon.style.display = 'block'; }
+  else { moonIcon.style.display = 'block'; sunIcon.style.display = 'none'; }
+}
+applyTheme(currentTheme);
+themeBtn.addEventListener('click', () => {
+  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+  applyTheme(currentTheme);
 });
+
+// Examples
+const EXAMPLES = ["សុខ សំណាង","ដារ៉ា","ចាន់ រតនា","សំណាង","ស្រី មុំ","វិចិត្រ", "សុវណ្ណារិទ្ធ", "ជ័យ"];
+const exWrap = $('examples');
+if (exWrap && window.KhmerRomanize) {
+  EXAMPLES.forEach(k => {
+    const c = document.createElement('button'); c.className = 'chip';
+    c.innerHTML = k + '<small>' + KhmerRomanize.romanize(k) + '</small>';
+    c.onclick = () => { input.value = k; input.focus(); render(); };
+    exWrap.appendChild(c);
+  });
+}
+
+// On-screen keyboard
+const CONS_ROWS = [
+  "ក ខ គ ឃ ង ច ឆ ជ ឈ ញ",
+  "ដ ឋ ឌ ឍ ណ ត ថ ទ ធ ន",
+  "ប ផ ព ភ ម យ រ ល វ ស",
+  "ហ ឡ អ"
+];
+const VOWELS = "ា ិ ី ឹ ឺ ុ ូ ួ ើ ឿ ៀ េ ែ ៃ ោ ៅ ំ ះ ់ ៉ ៊".split(" ");
+const kbd = $('kbd');
+if (kbd) {
+  function insert(txt) {
+    const s = input.selectionStart, e = input.selectionEnd, v = input.value;
+    input.value = v.slice(0, s) + txt + v.slice(e);
+    const p = s + txt.length; input.setSelectionRange(p, p);
+    input.focus(); render();
+  }
+  function makeKey(ch, cls) {
+    const k = document.createElement("div"); k.className = "key" + (cls ? " " + cls : "");
+    k.textContent = ch; return k;
+  }
+  CONS_ROWS.forEach(row => {
+    const r = document.createElement("div"); r.className = "row";
+    row.split(" ").forEach(ch => { const k = makeKey(ch); k.onclick = () => insert(ch); r.appendChild(k); });
+    kbd.appendChild(r);
+  });
+  const vr = document.createElement("div"); vr.className = "row";
+  const vl = document.createElement("div"); vl.className = "lbl"; vl.textContent = "ស្រៈ និង​សញ្ញា"; vr.appendChild(vl);
+  VOWELS.forEach(ch => { const k = makeKey(ch); k.onclick = () => insert(ch); vr.appendChild(k); });
+  kbd.appendChild(vr);
+  const or_ = document.createElement("div"); or_.className = "row";
+  const opLbl = document.createElement("div"); opLbl.className = "lbl"; opLbl.textContent = "ផ្សេងៗ"; or_.appendChild(opLbl);
+  const coeng = makeKey("្", "wide"); coeng.onclick = () => insert("្"); or_.appendChild(coeng);
+  const sp = makeKey("ចន្លោះ", "wide"); sp.onclick = () => insert(" "); or_.appendChild(sp);
+  const bs = makeKey("⌫ លុប", "wide"); bs.onclick = () => {
+    const s = input.selectionStart, e = input.selectionEnd, v = input.value;
+    if (s === e && s > 0) { input.value = v.slice(0, s - 1) + v.slice(e); input.setSelectionRange(s - 1, s - 1); }
+    else { input.value = v.slice(0, s) + v.slice(e); input.setSelectionRange(s, s); }
+    input.focus(); render();
+  };
+  or_.appendChild(bs);
+  kbd.appendChild(or_);
+}
 
 render();
